@@ -4,13 +4,20 @@ const Usuario = require('../models/usuario');
 const { generarJWT } = require('../helpers/jwt');
 
 const getUsers = async (req, res) => {
+    const desde = Number(req.query.desde) || 0;
     // Extracción de usuarios, las llaves {} son para filtrar y se colocan los campos a filtrar en un solo
     // string separados solamente por un espacio en blanco
-    const usuarios = await Usuario.find({}, 'nombre email role google');
+    // const usuarios = await Usuario.find({}, 'nombre email role google').skip(desde).limit(5);
+    // const total = await Usuario.count();
+    const [usuarios, total] = await Promise.all([
+        Usuario.find({}, 'nombre email role google img').skip(desde).limit(5),
+        Usuario.countDocuments()
+    ]);
 
     res.json({
         ok: true,
-        usuarios
+        usuarios,
+        total
     })
 }
 
