@@ -48,7 +48,7 @@ const googleSignIn = async (req, res = response) => {
     try {
         const { name, email, picture } = await googleVerify(googleToken);
 
-        const usuarioDB = await Usuario.findOne({email});
+        const usuarioDB = await Usuario.findOne({ email });
         let usuario;
 
         if (!usuarioDB) {
@@ -90,9 +90,13 @@ const refreshToken = async (req, res = response) => {
 
     // Generar el TOKEN = JTW
     const token = await generarJWT(uid);
+
+    // Obtener el usuario por uid
+    const usuario = await Usuario.findById(uid);
     res.json({
         ok: true,
-        token
+        token,
+        usuario
     });
 }
 
